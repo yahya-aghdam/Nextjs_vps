@@ -21,6 +21,7 @@ git config --global user.email "$git_email"
 
 read -r -p "Enter you git project link: " git_proejct_link
 
+mkdir /var/www/
 cd /var/www/ 
 
 git clone "$git_proejct_link"
