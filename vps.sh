@@ -39,7 +39,7 @@ npm i
 npx prisma generate
 npx prisma migrate deploy -y
 npx prisma migrate dev -y
-npm run build
+npx next build
 
 
 
