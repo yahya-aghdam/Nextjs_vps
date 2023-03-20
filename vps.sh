@@ -18,9 +18,9 @@ apt update && apt upgrade -y
 
 
 echo -e "$BLUE Installing first deps ===> $COLOR_OFF"
-
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-apt install nodejs -y
+apt install curl -y
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&\
+apt-get install -y nodejs
 
 apt install npm -y
 
@@ -64,9 +64,9 @@ echo -e "$BLUE Unpacking package.json and build project ===> $COLOR_OFF"
 
 rm package-lock.json
 npm i
-npx prisma generate
-npx prisma migrate deploy -y
+# add your desire installation and configure here
 npx prisma migrate dev -y
+npm prisma generate
 npx next build
 
 ###########################
