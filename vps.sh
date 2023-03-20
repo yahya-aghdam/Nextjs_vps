@@ -32,10 +32,10 @@ npm i -g pm2 -y
 echo -e "$BLUE Configuring git ===> $COLOR_OFF"
 
 # read and make folder dir
-echo -e "$GREEN Enter you git account name: "
+echo -e "$GREEN Enter you git account name: $COLOR_OFF"
 read -r -p " " git_name
 
-echo -e "$GREEN Enter you git email name: "
+echo -e "$GREEN Enter you git email name: $COLOR_OFF"
 read -r -p " " git_email
 
 git config --global user.name "$git_name"
@@ -46,7 +46,7 @@ git config --global user.email "$git_email"
 
 echo -e "$BLUE Install main next.js project ===> $COLOR_OFF"
 
-echo -e "$GREEN Enter you git project link: "
+echo -e "$GREEN Enter you git project link: $COLOR_OFF"
 read -r -p " " git_proejct_link
 
 mkdir /var/www/
@@ -83,10 +83,10 @@ rm /etc/nginx/sites-enabled/default
 nano /etc/ssl/cert.pem 
 nano /etc/ssl/key.pem 
 
-echo -e "$GREEN Enter your website domain name: "
+echo -e "$GREEN Enter your website domain name: $COLOR_OFF"
 read -r -p " " domian_name
 
-echo -e "$GREEN Enter the port of your nextjs project that running on it: "
+echo -e "$GREEN Enter the port of your nextjs project that running on it: $COLOR_OFF"
 read -r -p " " port_name
 
 echo "
@@ -142,7 +142,7 @@ systemctl reload nginx
 
 echo -e "$BLUE Add project to pm2 and save it ===> $COLOR_OFF"
 
-echo -e "$GREEN Enter your project name in pm2: "
+echo -e "$GREEN Enter your project name in pm2: $COLOR_OFF"
 read -r -p " " pm2_name
 pm2 start npm --name="$pm2_name" -- start
 
