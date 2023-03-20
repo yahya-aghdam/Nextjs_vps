@@ -1,13 +1,15 @@
 #!/bin/bash
 
+gh repo clone scorpio-demon/nextjs_vps
+
 apt update && apt upgrade -y
 
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-apt install nodejs
+apt install nodejs -y
 
-apt install npm
+apt install npm -y
 
-npm i -g pm2
+npm i -g pm2 -y
 
 
 # read and make folder dir
@@ -22,7 +24,8 @@ read -r -p "Enter you git project link: " git_proejct_link
 cd /var/www/ 
 
 git clone "$git_proejct_link"
-project_dir=${git_proejct_link##*/}
+project_dir_with_git_sign=${git_proejct_link##*/}
+project_dir=${project_dir_with_git_sign%%.git}
 cd "$project_dir"
 chown -R $USER:$USER "/var/www/$project_dir"
 
@@ -33,8 +36,8 @@ chown -R $USER:$USER "/var/www/$project_dir"
 
 npm i
 npx prisma generate
-npx prisma migrate deploy
-npx prisma migrate dev
+npx prisma migrate deploy -y
+npx prisma migrate dev -y
 npm run build
 
 
