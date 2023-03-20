@@ -1,8 +1,22 @@
 #!/bin/bash
 
-gh repo clone scorpio-demon/nextjs_vps
+GREEN='\033[0;32m'
+BLUE='\033[0;34m' 
+
+
+#############################
+
+
+echo -e "$BLUE Updating VPS ===>"
 
 apt update && apt upgrade -y
+
+
+#############################
+
+
+
+echo -e "$BLUE Installing first deps ===>"
 
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 apt install nodejs -y
@@ -12,14 +26,27 @@ apt install npm -y
 npm i -g pm2 -y
 
 
+############################
+
+echo -e "$BLUE Configuring git ===>"
+
 # read and make folder dir
-read -r -p "Enter you git account name: " git_name
-read -r -p "Enter you git email name: " git_email
+echo -e "$GREEN Enter you git account name: "
+read -r -p git_name
+
+echo -e "$GREEN Enter you git email name: "
+read -r -p git_email
 
 git config --global user.name "$git_name"
 git config --global user.email "$git_email"
 
-read -r -p "Enter you git project link: " git_proejct_link
+
+
+
+echo -e "$BLUE Install main next.js project ===>"
+
+echo -e "$GREEN Enter you git project link: "
+read -r -p git_proejct_link
 
 mkdir /var/www/
 cd /var/www/ 
@@ -30,29 +57,36 @@ project_dir=${project_dir_with_git_sign%%.git}
 cd "$project_dir"
 chown -R $USER:$USER "/var/www/$project_dir"
 
-# enter pass
+###########################
 
+echo -e "$BLUE Unpacking package.json and build project ===>"
 
-
-
+rm package-lock.json
 npm i
 npx prisma generate
 npx prisma migrate deploy -y
 npx prisma migrate dev -y
 npx next build
 
+###########################
 
+echo -e "$BLUE Install and configure NginX + SSL ===>"
 
 apt install nginx
 ufw allow 'Nginx Full'
 rm /etc/nginx/sites-enabled/default
 
+
+
 # ssl
 nano /etc/ssl/cert.pem 
 nano /etc/ssl/key.pem 
 
-read -r -p "Enter your website domain name: " domian_name
-read -r -p "Enter the port nextjs running: " port_name
+echo -e "$GREEN Enter your website domain name: "
+read -r -p domian_name
+
+echo -e "$GREEN Enter the port of your nextjs project that running on it: "
+read -r -p port_name
 
 echo "
 server {
@@ -103,16 +137,24 @@ nginx -t
 systemctl reload nginx
 
 
-read -r -p "Enter your project name in pm2: " pm2_name
+###########################
+
+echo -e "$BLUE Add project to pm2 and save it ===>"
+
+echo -e "$GREEN Enter your project name in pm2: "
+read -r -p pm2_name
 pm2 start npm --name="$pm2_name" -- start
 
 # save pm2
 pm2 startup
 pm2 save
 
+##########################
+
+echo -e "$BLUE Change default path of terminal to project path ===>"
 
 # change terminal default path
 echo "cd /var/www/$project_dir" >> ~/.bashrc
 
 # make executable itself
-chmod +x "$0"
+# chmod +x "$0"
