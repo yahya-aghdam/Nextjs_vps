@@ -2,12 +2,13 @@
 
 GREEN='\033[0;32m'
 BLUE='\033[0;34m' 
+COLOR_OFF='\033[0m' 
 
 
 #############################
 
 
-echo -e "$BLUE Updating VPS ===>"
+echo -e "$BLUE Updating VPS ===> $COLOR_OFF"
 
 apt update && apt upgrade -y
 
@@ -16,7 +17,7 @@ apt update && apt upgrade -y
 
 
 
-echo -e "$BLUE Installing first deps ===>"
+echo -e "$BLUE Installing first deps ===> $COLOR_OFF"
 
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 apt install nodejs -y
@@ -28,14 +29,14 @@ npm i -g pm2 -y
 
 ############################
 
-echo -e "$BLUE Configuring git ===>"
+echo -e "$BLUE Configuring git ===> $COLOR_OFF"
 
 # read and make folder dir
 echo -e "$GREEN Enter you git account name: "
-read -r -p git_name
+read -r -p " " git_name
 
 echo -e "$GREEN Enter you git email name: "
-read -r -p git_email
+read -r -p " " git_email
 
 git config --global user.name "$git_name"
 git config --global user.email "$git_email"
@@ -43,10 +44,10 @@ git config --global user.email "$git_email"
 
 
 
-echo -e "$BLUE Install main next.js project ===>"
+echo -e "$BLUE Install main next.js project ===> $COLOR_OFF"
 
 echo -e "$GREEN Enter you git project link: "
-read -r -p git_proejct_link
+read -r -p " " git_proejct_link
 
 mkdir /var/www/
 cd /var/www/ 
@@ -59,7 +60,7 @@ chown -R $USER:$USER "/var/www/$project_dir"
 
 ###########################
 
-echo -e "$BLUE Unpacking package.json and build project ===>"
+echo -e "$BLUE Unpacking package.json and build project ===> $COLOR_OFF"
 
 rm package-lock.json
 npm i
@@ -70,7 +71,7 @@ npx next build
 
 ###########################
 
-echo -e "$BLUE Install and configure NginX + SSL ===>"
+echo -e "$BLUE Install and configure NginX + SSL ===> $COLOR_OFF"
 
 apt install nginx
 ufw allow 'Nginx Full'
@@ -83,10 +84,10 @@ nano /etc/ssl/cert.pem
 nano /etc/ssl/key.pem 
 
 echo -e "$GREEN Enter your website domain name: "
-read -r -p domian_name
+read -r -p " " domian_name
 
 echo -e "$GREEN Enter the port of your nextjs project that running on it: "
-read -r -p port_name
+read -r -p " " port_name
 
 echo "
 server {
@@ -139,10 +140,10 @@ systemctl reload nginx
 
 ###########################
 
-echo -e "$BLUE Add project to pm2 and save it ===>"
+echo -e "$BLUE Add project to pm2 and save it ===> $COLOR_OFF"
 
 echo -e "$GREEN Enter your project name in pm2: "
-read -r -p pm2_name
+read -r -p " " pm2_name
 pm2 start npm --name="$pm2_name" -- start
 
 # save pm2
@@ -151,7 +152,7 @@ pm2 save
 
 ##########################
 
-echo -e "$BLUE Change default path of terminal to project path ===>"
+echo -e "$BLUE Change default path of terminal to project path ===> $COLOR_OFF"
 
 # change terminal default path
 echo "cd /var/www/$project_dir" >> ~/.bashrc
