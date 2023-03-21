@@ -96,7 +96,7 @@ server {
     server_name $domian_name www.$domian_name;
     root /var/www/$domian_name;
     index index.html index.htm index.nginx-debian.html;
-    return 302 https://$server_name$request_uri;
+    return 302 https://\$server_name\$request_uri;
 }
 server {
     # SSL configuration
@@ -111,8 +111,8 @@ server {
     index index.php  index.html index.htm index.nginx-debian.html;
 
     location / {            
-        proxy_set_header X-FORWARD-FOR $remote_addr;
-        proxy_set_header Host $http_host;
+        proxy_set_header X-FORWARD-FOR \$remote_addr;
+        proxy_set_header Host \$http_host;
         proxy_pass http://localhost:$port_name;
     }
     
@@ -120,8 +120,8 @@ server {
     location /_next/webpack-hmr {
     	proxy_pass http://localhost:$port_name/_next/webpack-hmr;
     	proxy_http_version 1.1;
-    	proxy_set_header Upgrade $http_upgrade;
-    	proxy_set_header Connection "upgrade";
+    	proxy_set_header Upgrade \$http_upgrade;
+    	proxy_set_header Connection '"upgrade"';
     }
 
     location ~ /\.ht {
