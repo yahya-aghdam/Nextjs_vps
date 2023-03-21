@@ -65,7 +65,7 @@ echo -e "$BLUE Unpacking package.json and build project ===> $COLOR_OFF"
 rm package-lock.json
 npm i
 # add your desire installation and configure here
-npx prisma migrate dev -y
+npx prisma migrate dev
 npm prisma generate
 npx next build
 
