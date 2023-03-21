@@ -83,7 +83,7 @@ rm /etc/nginx/sites-enabled/default
 nano /etc/ssl/cert.pem 
 nano /etc/ssl/key.pem 
 
-echo -e "$GREEN Enter your website domain name: $COLOR_OFF"
+echo -e "$GREEN Enter your website domain name WITHOUT WWW: $COLOR_OFF"
 read -r -p " " domian_name
 
 echo -e "$GREEN Enter the port of your nextjs project that running on it: $COLOR_OFF"
@@ -92,44 +92,35 @@ read -r -p " " port_name
 echo "
 server {
     listen 80;
-    listen [::]:80;
-    server_name $domian_name www.$domian_name;
-    root /var/www/$domian_name;
-    index index.html index.htm index.nginx-debian.html;
-    return 302 https://\$server_name\$request_uri;
-}
-server {
-    # SSL configuration
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    ssl_certificate         /etc/ssl/cert.pem;
-    ssl_certificate_key     /etc/ssl/key.pem;
+    server_name www.$domian_name $domian_name;
 
-    server_name $domian_name www.$domian_name;
-
-    root /var/www/$domian_name;
-    index index.php  index.html index.htm index.nginx-debian.html;
-
-    location / {            
-        proxy_set_header X-FORWARD-FOR \$remote_addr;
-        proxy_set_header Host \$http_host;
+    location / {
         proxy_pass http://localhost:$port_name;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
     }
-    
-    # next 12 upgrade
-    location /_next/webpack-hmr {
-    	proxy_pass http://localhost:$port_name/_next/webpack-hmr;
-    	proxy_http_version 1.1;
-    	proxy_set_header Upgrade \$http_upgrade;
-    	proxy_set_header Connection '"upgrade"';
+}
+
+    server {
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+        ssl_certificate         /etc/ssl/cert.pem;
+        ssl_certificate_key     /etc/ssl/key.pem;
+
+        location / {
+            proxy_pass http://localhost:$port_name;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection '"upgrade"';
+            proxy_set_header Host \$host;
+            proxy_cache_bypass \$http_upgrade;
     }
 
-    location ~ /\.ht {
-        deny all;
-    }
-
-
-}" > /etc/nginx/sites-available/"$domian_name"
+}
+" > /etc/nginx/sites-available/"$domian_name"
 
 
 ln -s /etc/nginx/sites-available/"$domian_name" /etc/nginx/sites-enabled/
